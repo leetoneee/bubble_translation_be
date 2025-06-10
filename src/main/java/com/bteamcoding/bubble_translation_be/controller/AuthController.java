@@ -3,6 +3,7 @@ package com.bteamcoding.bubble_translation_be.controller;
 import com.bteamcoding.bubble_translation_be.dto.request.SignInRequest;
 import com.bteamcoding.bubble_translation_be.dto.request.SignUpRequest;
 import com.bteamcoding.bubble_translation_be.dto.response.ApiResponse;
+import com.bteamcoding.bubble_translation_be.dto.response.AuthResponse;
 import com.bteamcoding.bubble_translation_be.dto.response.UserResponse;
 import com.bteamcoding.bubble_translation_be.service.AuthService;
 import jakarta.validation.Valid;
@@ -20,19 +21,15 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ApiResponse<UserResponse> signUp(@Valid @RequestBody SignUpRequest req) {
-        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
-
-        apiResponse.setResult(authService.signUp(req));
-
-        return apiResponse;
+        return ApiResponse.<UserResponse>builder()
+                .result(authService.signUp(req))
+                .build();
     }
 
     @PostMapping("/signin")
-    public ApiResponse<UserResponse> signIn(@Valid @RequestBody SignInRequest req) {
-        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
-
-        apiResponse.setResult(authService.signIn(req));
-
-        return apiResponse;
+    public ApiResponse<AuthResponse> signIn(@Valid @RequestBody SignInRequest req) {
+        return ApiResponse.<AuthResponse>builder()
+                .result(authService.signIn(req))
+                .build();
     }
 }

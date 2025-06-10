@@ -2,6 +2,7 @@ package com.bteamcoding.bubble_translation_be.service.impl;
 
 import com.bteamcoding.bubble_translation_be.dto.request.SignInRequest;
 import com.bteamcoding.bubble_translation_be.dto.request.SignUpRequest;
+import com.bteamcoding.bubble_translation_be.dto.response.AuthResponse;
 import com.bteamcoding.bubble_translation_be.dto.response.UserResponse;
 import com.bteamcoding.bubble_translation_be.entity.User;
 import com.bteamcoding.bubble_translation_be.excception.AppException;
@@ -31,13 +32,21 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserResponse signIn(SignInRequest req) {
+    public AuthResponse signIn(SignInRequest req) {
         User user = userRepo.findByEmail(req.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!encoder.matches(req.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        return mapper.toUserResponse(userRepo.findById(user.getId())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+
+        AuthResponse authResponse = new AuthResponse();
+
+        authResponse.setAuthenticated(true);
+        authResponse.setUser(
+                mapper.toUserResponse(userRepo.findById(user.getId())
+                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)))
+        );
+
+        return authResponse;
     }
 }

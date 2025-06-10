@@ -13,6 +13,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SignInRequest {
-    @Email @NotBlank String email;
-    @NotBlank String password;
+    @Email
+    @NotBlank
+    String email;
+
+    @NotBlank
+    String password;
 }
