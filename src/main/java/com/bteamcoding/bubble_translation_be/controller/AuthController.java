@@ -5,6 +5,7 @@ import com.bteamcoding.bubble_translation_be.dto.request.SignUpRequest;
 import com.bteamcoding.bubble_translation_be.dto.response.ApiResponse;
 import com.bteamcoding.bubble_translation_be.dto.response.AuthResponse;
 import com.bteamcoding.bubble_translation_be.dto.response.UserResponse;
+import com.bteamcoding.bubble_translation_be.dto.response.UserResponseWrapper;
 import com.bteamcoding.bubble_translation_be.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ApiResponse<UserResponse> signUp(@Valid @RequestBody SignUpRequest req) {
-        return ApiResponse.<UserResponse>builder()
+    public ApiResponse<UserResponseWrapper> signUp(@Valid @RequestBody SignUpRequest req) {
+        return ApiResponse.<UserResponseWrapper>builder()
                 .result(authService.signUp(req))
                 .build();
     }

@@ -14,14 +14,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
-    @NotBlank
     String username;
 
     @Email
-    @NotBlank
     String email;
 
     @Size(min = 6)
-    @NotBlank
     String password;
 }

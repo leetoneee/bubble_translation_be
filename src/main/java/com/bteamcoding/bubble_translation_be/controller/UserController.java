@@ -44,9 +44,19 @@ public class UserController {
                 .build();
     }
 
+    @PatchMapping("/{userId}")
+    ApiResponse<UserResponse> updateUserPartially(
+            @PathVariable Long userId,
+            @RequestBody @Valid UserUpdateRequest request
+    ) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUserPartial(userId, request))
+                .build();
+    }
+
     @DeleteMapping("/{userId}")
     ApiResponse<String> deleteUser(@PathVariable Long userId) {
-        userService.deleteUser(userId);
+        userService.softDeleteUser(userId);
         return ApiResponse.<String>builder().result("User has been deleted").build();
     }
 }
