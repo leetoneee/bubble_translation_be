@@ -7,8 +7,8 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WordSyncResponse {
