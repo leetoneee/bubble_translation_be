@@ -10,6 +10,7 @@ public enum ErrorCode {
     INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
     USER_EXISTED(400, "User existed", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(404, "User not existed", HttpStatus.NOT_FOUND),
+    FOLDER_NOT_EXISTED(404, "Folder not existed", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(401, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     ;
