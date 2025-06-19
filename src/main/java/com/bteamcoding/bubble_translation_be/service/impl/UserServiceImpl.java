@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getUsers() {
-        List<User> users = userRepo.findAll();
+        List<User> users = userRepo.findAllActiveUsers();
         return users.stream()
                 .map(mapper::toUserResponse)
                 .collect(Collectors.toList());
@@ -43,13 +44,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUser(Long userId) {
-        return mapper.toUserResponse(userRepo.findById(userId)
+        return mapper.toUserResponse(userRepo.findActiveById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 
     @Override
     public UserResponse updateUser(Long userId, UserUpdateRequest request) {
-        User user = userRepo.findById(userId)
+        User user = userRepo.findActiveById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         mapper.updateUser(user, request);
@@ -58,7 +59,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        userRepo.deleteById(userId);
+    public UserResponse updateUserPartial(Long id, UserUpdateRequest req) {
+        User user = userRepo.findActiveById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if (req.getUsername() != null) {
+            user.setUsername(req.getUsername());
+        }
+
+        if (req.getEmail() != null) {
+            // Check email đã tồn tại và không phải của user hiện tại
+            userRepo.findByEmail(req.getEmail()).ifPresent(existing -> {
+                if (!existing.getId().equals(user.getId()) && existing.getDeletedAt() == null) {
+                    throw new AppException(ErrorCode.USER_EXISTED);
+                }
+            });
+            user.setEmail(req.getEmail());
+        }
+
+        if (req.getPassword() != null) {
+            user.setPassword(encoder.encode(req.getPassword()));
+        }
+
+        return mapper.toUserResponse(userRepo.save(user));
+    }
+
+    @Override
+    public void softDeleteUser(Long userId) {
+        User user = userRepo.findActiveById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setDeletedAt(LocalDateTime.now());
+        userRepo.save(user);
     }
 }

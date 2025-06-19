@@ -16,5 +16,7 @@ public interface UserService {
 
     UserResponse updateUser(Long userId, UserUpdateRequest request);
 
-    void deleteUser(Long userId);
+    UserResponse updateUserPartial(Long id, UserUpdateRequest req);
+
+    void softDeleteUser(Long userId);
 }
